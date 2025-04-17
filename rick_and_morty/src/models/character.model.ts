@@ -3,6 +3,7 @@ export interface Origin {
 }
 
 export interface Character {
+  id: number;
   name: string;
   status: string;
   species: string;

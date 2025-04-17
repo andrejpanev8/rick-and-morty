@@ -3,6 +3,9 @@ import { Character } from '../models/character.model';
 import LoadingSpinner from '../components/Utilities/LoadingAnimation';
 import CharacterFilterSortPanel from '../components/Utilities/CharacterFilterSortPanel';
 import { getProcessedCharacters } from '../services/filterAndSort.service';
+import Characters from '../components/Character/Characters';
+
+const MAX_CACHED = 100;
 
 export default function InfiniteScrollPage() {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -40,9 +43,12 @@ export default function InfiniteScrollPage() {
         sort: sortOption,
       });
 
-      setCharacters(prev =>
-        page === 1 ? result.characters : [...prev, ...result.characters]
-      );
+      setCharacters(prev => {
+        const newCharacters =
+          page === 1 ? result.characters : [...prev, ...result.characters];
+        return newCharacters.slice(-MAX_CACHED);
+      });
+
       setTotalPages(result.totalPages);
       setLoading(false);
     };
@@ -50,8 +56,13 @@ export default function InfiniteScrollPage() {
     loadCharacters();
   }, [page, statusFilter, speciesFilter, sortOption]);
 
-  const handleFilterChange = (type: 'status' | 'species' | 'sort', value: string) => {
+  useEffect(() => {
+    setCharacters([]);
     setPage(1);
+    window.scrollTo(0, 0);
+  }, [statusFilter, speciesFilter, sortOption]);
+
+  const handleFilterChange = (type: 'status' | 'species' | 'sort', value: string) => {
     if (type === 'status') setStatusFilter(value);
     if (type === 'species') setSpeciesFilter(value);
     if (type === 'sort') setSortOption(value);
@@ -68,25 +79,7 @@ export default function InfiniteScrollPage() {
         onSortChange={(val) => handleFilterChange('sort', val)}
       />
 
-      <div className="row">
-        {characters.map((char, index) => {
-          const isLast = index === characters.length - 1;
-          return (
-            <div
-              ref={isLast ? lastCharacterRef : null}
-              className="col-md-3 mb-4"
-            >
-              <div className="card h-100">
-                <img src={char.image} className="card-img-top" alt={char.name} />
-                <div className="card-body">
-                  <h5 className="card-title">{char.name}</h5>
-                  <p className="card-text">{char.species}</p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <Characters characters={characters} lastCharacterRef={lastCharacterRef}/>
 
       {loading && <LoadingSpinner />}
       {!loading && page >= totalPages && characters.length > 0 && (
@@ -94,4 +87,4 @@ export default function InfiniteScrollPage() {
       )}
     </div>
   );
-};
+}

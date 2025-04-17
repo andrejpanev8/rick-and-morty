@@ -13,7 +13,7 @@ i18n
     resources: {
       en: {
         translation: {
-          title: 'Rick & Morty Views',
+          title: 'Rick & Morty',
           scrolledCharacters: 'Scrolled Characters',
           paginatedCharacters: 'Paginated Characters',
           pagination: 'Paginated',
@@ -41,7 +41,7 @@ i18n
       },
       de: {
         translation: {
-          title: 'Rick & Morty Ansichten',
+          title: 'Rick & Morty',
           scrolledCharacters: 'Unendliche Scroll-Charaktere',
           paginatedCharacters: 'Paginierte Zeichen',
           pagination: 'Seitenweise',
