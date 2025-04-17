@@ -1,0 +1,27 @@
+.character-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #fff;
+    transition: transform 0.2s;
+  }
+  
+  .character-card:hover {
+    transform: scale(1.03);
+  }
+  
+  .character-image {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .character-info {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  
