@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface FilterSortProps {
@@ -10,21 +9,21 @@ interface FilterSortProps {
   onSortChange: (value: string) => void;
 }
 
-const CharacterFilterSortPanel: React.FC<FilterSortProps> = ({
+export default function CharacterFilterSortPanel({
   status,
   species,
   sort,
   onStatusChange,
   onSpeciesChange,
   onSortChange,
-}) => {
+}: FilterSortProps) {
+  const { t } = useTranslation();
+
   const clearFilters = () => {
     onStatusChange('');
     onSpeciesChange('');
     onSortChange('');
   };
-
-  const { t } = useTranslation();
 
   return (
     <div className="d-flex flex-wrap justify-content-center gap-3 mb-4">
@@ -60,14 +59,9 @@ const CharacterFilterSortPanel: React.FC<FilterSortProps> = ({
         <option value="origin">{t('originAZ')}</option>
       </select>
 
-      <button
-        className="btn btn-danger"
-        onClick={clearFilters}
-      >
+      <button className="btn btn-danger" onClick={clearFilters}>
         {t('clearFilters')}
       </button>
     </div>
   );
-};
-
-export default CharacterFilterSortPanel;
+}

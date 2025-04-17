@@ -1,4 +1,3 @@
-import React from 'react';
 import { Character } from '../../models/character.model';
 import CharacterCard from './CharacterCard';
 
@@ -7,7 +6,7 @@ interface CharactersProps {
   lastCharacterRef?: (node: HTMLDivElement | null) => void;
 }
 
-const Characters: React.FC<CharactersProps> = ({ characters, lastCharacterRef }) => {
+export default function Characters({ characters, lastCharacterRef }: CharactersProps) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
       {characters.map((character, index) => {
@@ -19,12 +18,10 @@ const Characters: React.FC<CharactersProps> = ({ characters, lastCharacterRef })
             ref={isLast && lastCharacterRef ? lastCharacterRef : null}
             className="col-md-3 mb-4"
           >
-            <CharacterCard key={index} character={character} />
+            <CharacterCard character={character} />
           </div>
         );
       })}
     </div>
   );
-};
-
-export default Characters;
+}

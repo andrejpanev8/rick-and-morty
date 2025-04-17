@@ -1,4 +1,3 @@
-import React from 'react';
 import { Character } from '../../models/character.model';
 import './CharacterCard.css';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +8,7 @@ interface CharacterCardProps {
 
 
 
-const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
+export default function CharacterCard ({ character }: CharacterCardProps ){
   
   const { t } = useTranslation();
 
@@ -38,5 +37,3 @@ const translateGender = (gender: string) => {
     </div>
   );
 };
-
-export default CharacterCard;
