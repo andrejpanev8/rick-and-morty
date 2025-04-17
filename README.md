@@ -16,3 +16,6 @@ exit project
 `npm install react-router-dom bootstrap react-bootstrap react-router-bootstrap`
 `npm install --save-dev @types/react-bootstrap`
 `npm install --save-dev @types/react-router-bootstrap`
+
+# Install language support libraries
+`npm install i18next react-i18next i18next-browser-languagedetector`

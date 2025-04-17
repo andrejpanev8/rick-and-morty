@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Character, GetAllCharactersResponse } from '../models/character.model';
-import { fetchCharactersByPage } from '../services/api.service';
+import { Character } from '../models/character.model';
 import Characters from '../components/Character/Characters';
 import LoadingSpinner from '../components/Utilities/LoadingAnimation';
+import CharacterFilterSortPanel from '../components/Utilities/CharacterFilterSortPanel';
+import { getProcessedCharacters } from '../services/filterAndSort.service';
 
 const PaginationPage: React.FC = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -10,51 +11,63 @@ const PaginationPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const [statusFilter, setStatusFilter] = useState('');
+  const [speciesFilter, setSpeciesFilter] = useState('');
+  const [sortOption, setSortOption] = useState('');
+
   useEffect(() => {
     const loadCharacters = async () => {
       setLoading(true);
-      const data: GetAllCharactersResponse | null = await fetchCharactersByPage(page);
-      if (data?.characters.results) {
-        setCharacters(data.characters.results);
-        setTotalPages(data.characters.info.pages);
-      }
+      const result = await getProcessedCharacters(page, {
+        status: statusFilter,
+        species: speciesFilter,
+        sort: sortOption,
+      });
+      setCharacters(result.characters);
+      setTotalPages(result.totalPages);
       setLoading(false);
     };
 
     loadCharacters();
-  }, [page]);
+  }, [page, statusFilter, speciesFilter, sortOption]);
 
   const getPageNumbers = () => {
     const maxVisible = 5;
     let start = Math.max(1, page - Math.floor(maxVisible / 2));
     let end = start + maxVisible - 1;
-
     if (end > totalPages) {
       end = totalPages;
       start = Math.max(1, end - maxVisible + 1);
     }
 
-    const pages = [];
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    return pages;
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
   return (
     <div>
+      <CharacterFilterSortPanel
+        status={statusFilter}
+        species={speciesFilter}
+        sort={sortOption}
+        onStatusChange={(val) => {
+          setPage(1);
+          setStatusFilter(val);
+        }}
+        onSpeciesChange={(val) => {
+          setPage(1);
+          setSpeciesFilter(val);
+        }}
+        onSortChange={setSortOption}
+      />
+
       {loading ? (
-        <LoadingSpinner/>
+        <LoadingSpinner />
       ) : (
         <>
           <Characters characters={characters} />
           <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-            <button onClick={() => setPage(1)} disabled={page === 1}>
-              ⏮ First
-            </button>
-            <button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>
-              ◀ Prev
-            </button>
+            <button onClick={() => setPage(1)} disabled={page === 1}>⏮ First</button>
+            <button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>◀ Prev</button>
 
             {getPageNumbers().map((num) => (
               <button
@@ -70,12 +83,8 @@ const PaginationPage: React.FC = () => {
               </button>
             ))}
 
-            <button onClick={() => setPage((p) => Math.min(p + 1, totalPages))} disabled={page === totalPages}>
-              Next ▶
-            </button>
-            <button onClick={() => setPage(totalPages)} disabled={page === totalPages}>
-              Last ⏭
-            </button>
+            <button onClick={() => setPage((p) => Math.min(p + 1, totalPages))} disabled={page === totalPages}>Next ▶</button>
+            <button onClick={() => setPage(totalPages)} disabled={page === totalPages}>Last ⏭</button>
           </div>
         </>
       )}

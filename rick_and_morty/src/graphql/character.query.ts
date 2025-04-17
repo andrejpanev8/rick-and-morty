@@ -22,3 +22,27 @@ export const GET_ALL_CHARACTERS = gql`
     }
   }
 `;
+
+export const GET_FILTERED_CHARACTERS = gql`
+query GetFilteredCharacters($page: Int, $name: String, $status: String, $species: String) {
+  characters(page: $page, filter: { name: $name, status: $status, species: $species }) {
+    info {
+      count
+      pages
+      next
+      prev
+    }
+    results {
+      id
+      name
+      status
+      species
+      gender
+      image
+      origin {
+        name
+      }
+    }
+  }
+}
+`;

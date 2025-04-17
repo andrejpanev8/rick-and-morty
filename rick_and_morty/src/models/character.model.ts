@@ -26,3 +26,7 @@ export interface CharactersData {
 export interface GetAllCharactersResponse {
   characters: CharactersData;
 }
+
+export interface FilteredCharactersResponse {
+  characters: CharactersData;
+}
