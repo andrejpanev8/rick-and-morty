@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Character } from '../models/character.model';
 import Characters from '../components/Character/Characters';
 import LoadingSpinner from '../components/Utilities/LoadingAnimation';
 import CharacterFilterSortPanel from '../components/Utilities/CharacterFilterSortPanel';
 import { getProcessedCharacters } from '../services/filterAndSort.service';
 
-const PaginationPage: React.FC = () => {
+export default function PaginationPage() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -91,5 +91,3 @@ const PaginationPage: React.FC = () => {
     </div>
   );
 };
-
-export default PaginationPage;
