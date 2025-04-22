@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Rick and Morty
 
 on:
   push:
@@ -10,28 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Verify files
+    - name: Verify project structure
       run: |
+        echo "PROJECT STRUCTURE:"
         ls -la
-        echo "Package.json exists: $(test -f package.json && echo 'Yes' || echo 'No')"
+        echo "APP FOLDER CONTENTS:"
+        ls -la rick_and_morty/
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
         cache: 'npm'
+        cache-dependency-path: rick_and_morty/package-lock.json
 
     - name: Install dependencies
-      run: npm install
+      working-directory: ./rick_and_morty
+      run: npm ci
 
     - name: Build project
+      working-directory: ./rick_and_morty
       run: npm run build
 
-    - name: Verify build output
-      run: ls -la dist/
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: 'rick_and_morty/dist'
 
   deploy:
     needs: build
@@ -39,12 +46,11 @@ jobs:
     permissions:
       pages: write
       id-token: write
-
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: 'dist/'
-
     - name: Deploy to GitHub Pages
-      uses: actions/deploy-pages@v2
+      id: deployment
+      uses: actions/deploy-pages@v3
