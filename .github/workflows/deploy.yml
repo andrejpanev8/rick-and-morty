@@ -14,48 +14,48 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        path: 'rick_and_morty'  # Correct underscore format
+        path: 'rick_and_morty'  # Creates outer directory
     
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
         
-    - name: Verify directory structure
+    - name: Verify structure
       run: |
-        echo "Current directory: $(pwd)"
+        echo "Current path: $(pwd)"
         ls -la
-        ls -la rick_and_morty/  # Changed to underscores
+        ls -la rick_and_morty/rick_and_morty/  # Actual project root
         
     - name: Install dependencies
-      working-directory: ./rick_and_morty
+      working-directory: ./rick_and_morty/rick_and_morty
       run: |
         npm install
         npm list --depth=0
         
     - name: Run tests
-      working-directory: ./rick_and_morty
+      working-directory: ./rick_and_morty/rick_and_morty
       run: npm test -- --watchAll=false --coverage
         
     - name: Build project
-      working-directory: ./rick_and_morty
+      working-directory: ./rick_and_morty/rick_and_morty
       run: |
         npm run build
         ls -la dist/
         
     - name: Verify production build
-      working-directory: ./rick_and_morty
+      working-directory: ./rick_and_morty/rick_and_morty
       run: |
         npm install -g serve
         serve -s dist -l 8080 &
         sleep 10
         curl -v http://localhost:8080
 
-    - name: Upload artifact for deployment
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: vite-build
-        path: rick_and_morty/dist/  # Corrected path with underscores
+        path: rick_and_morty/rick_and_morty/dist/
 
   deploy:
     needs: test-and-build
@@ -65,11 +65,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Download build artifact
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: vite-build
           path: dist
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: actions/deploy-pages@v3
