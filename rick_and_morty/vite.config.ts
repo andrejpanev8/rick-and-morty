@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/rick-and-morty/',
+  base: '/rick_and_morty/',
 })
