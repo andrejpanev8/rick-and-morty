@@ -3,7 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   base: '/rick-and-morty/',
-  build: {
-    outDir: 'dist'
-  }
+  plugins: [react()]
 })
