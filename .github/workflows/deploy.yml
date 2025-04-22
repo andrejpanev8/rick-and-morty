@@ -14,8 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: 20.x
         cache: 'npm'
@@ -40,10 +40,12 @@ jobs:
       uses: codecov/codecov-action@v3
       if: success()
 
-    - name: Upload production build artifact
-      uses: actions/upload-pages-artifact@v2
+    - name: Upload artifact for deployment
+      uses: actions/upload-artifact@v4
       with:
-        path: 'dist'
+        name: vite-build
+        path: dist/
+        retention-days: 1
 
   deploy:
     needs: test-and-build
@@ -56,6 +58,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vite-build
+          path: dist
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
