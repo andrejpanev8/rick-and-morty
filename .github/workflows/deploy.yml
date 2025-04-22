@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        path: 'rick-and-morty'  # Explicitly set checkout path
+        path: 'rick_and_morty'
     
     - name: Use Node.js
       uses: actions/setup-node@v4
@@ -28,23 +28,23 @@ jobs:
         ls -la rick-and-morty/
         
     - name: Install dependencies
-      working-directory: ./rick-and-morty
+      working-directory: ./rick_and_morty
       run: |
         npm install
         npm list --depth=0
         
     - name: Run tests
-      working-directory: ./rick-and-morty
+      working-directory: ./rick_and_morty
       run: npm test -- --watchAll=false --coverage
         
     - name: Build project
-      working-directory: ./rick-and-morty
+      working-directory: ./rick_and_morty
       run: |
         npm run build
         ls -la dist/
         
     - name: Verify production build
-      working-directory: ./rick-and-morty
+      working-directory: ./rick_and_morty
       run: |
         npm install -g serve
         serve -s dist -l 8080 &
