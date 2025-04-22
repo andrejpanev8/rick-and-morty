@@ -24,16 +24,14 @@ jobs:
 
       - name: Build project
         working-directory: ./rick_and_morty
-        run: |
-          npm run build
-          echo "=== Build files ==="
-          ls -R dist
+        run: npm run build
 
+      # Option A: Upload only static client assets
       - name: Upload artifact (v4)
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
-          path: rick_and_morty/dist
+          path: rick_and_morty/dist/client
 
   deploy:
     needs: build
@@ -41,7 +39,6 @@ jobs:
     permissions:
       pages: write
       id-token: write
-
     steps:
       - name: Deploy to GitHub Pages (v4)
         uses: actions/deploy-pages@v4
