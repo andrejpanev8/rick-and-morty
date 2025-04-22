@@ -13,45 +13,52 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        path: 'rick-and-morty'  # Explicitly set checkout path
     
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
         
+    - name: Find package.json
+      run: |
+        echo "Current directory: $(pwd)"
+        ls -la
+        ls -la rick-and-morty/
+        
     - name: Install dependencies
+      working-directory: ./rick-and-morty
       run: |
         npm install
-        npm list --depth=0  # Debug installed packages
+        npm list --depth=0
         
     - name: Run tests
-      run: |
-        npm test -- --watchAll=false --coverage || echo "Tests failed but continuing"
+      working-directory: ./rick-and-morty
+      run: npm test -- --watchAll=false --coverage
         
     - name: Build project
+      working-directory: ./rick-and-morty
       run: |
-        echo "Building project..."
-        npm run build || (echo "Build failed"; exit 1)
-        ls -la dist/  # Debug build output
+        npm run build
+        ls -la dist/
         
     - name: Verify production build
+      working-directory: ./rick-and-morty
       run: |
         npm install -g serve
-        echo "Starting server..."
         serve -s dist -l 8080 &
         sleep 10
-        echo "Testing server..."
-        curl -v http://localhost:8080 || (echo "Server test failed"; exit 1)
+        curl -v http://localhost:8080
 
     - name: Upload artifact for deployment
       uses: actions/upload-artifact@v4
       with:
         name: vite-build
-        path: dist/
+        path: rick-and-morty/dist/
 
   deploy:
     needs: test-and-build
-    if: success()  # Only deploy if previous job succeeded
     permissions:
       pages: write
       id-token: write
