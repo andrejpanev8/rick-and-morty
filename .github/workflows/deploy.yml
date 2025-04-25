@@ -47,8 +47,13 @@ jobs:
           name: production-files
           path: ./rick_and_morty/dist
 
+      - name: Move build to root-level dist
+        run: |
+          mkdir -p dist
+          cp -r rick_and_morty/dist/* dist/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./rick_and_morty/dist
+          publish_dir: ./dist
